@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IIncidentService
+    public interface IIncident_ITAService
     {
-        IDataResult<object> GetAll();
-        IDataResult<object> GetById(int incidentId);
+        IDataResult<List<Incident_ITA>> GetAll();
+        IDataResult<Incident_ITA> GetById(int incidentId);
         IResult AddRange(object incident);
-          
+        IResult Update(Incident_ITA incident);
+        IResult Delete(Incident_ITA incident);
         object MapIncident(List<InputIncidentsDto> inputIncidentDto);
-        object MapIncident(FilterIncidentDto inputIncidentDto);
-        IDataResult<object> GetByFilter(object obj);
-
     }
 }

@@ -22,6 +22,11 @@ namespace Business.DependencyResolvers.Autofac
         {
             builder.RegisterType<IncidentManager>().As<IIncidentService>().SingleInstance();
             builder.RegisterType<EfIncidentDal>().As<IIncidentDal>().SingleInstance();
+            //builder.RegisterType<StateManager>().As<IStateService>().SingleInstance();
+
+            //builder.RegisterType<Incident_ITAManager>().As<IIncident_ITAService>().SingleInstance();
+            builder.RegisterType<EfIncident_ITADal>().As<IIncident_ITADal>().SingleInstance();
+            
 
 
             var assembly = Assembly.GetExecutingAssembly();

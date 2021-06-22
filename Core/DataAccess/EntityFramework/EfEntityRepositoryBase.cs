@@ -23,6 +23,15 @@ namespace Core.DataAccess.EntityFramework
             }
         }
 
+        public void AddRange(List<TEntity> entity)
+        {
+            using (TContext context = new TContext())
+            {
+                context.Set<TEntity>().AddRange(entity); ;
+                context.SaveChanges();
+            }
+        }
+
         public void Delete(TEntity entity)
         {
             using (TContext context = new TContext())

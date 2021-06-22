@@ -1,5 +1,7 @@
 using Business.Abstract;
 using Business.Concrete;
+using Core.Abstract;
+using Core.Mapper;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Builder;
@@ -37,11 +39,11 @@ namespace WebAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
             });
 
-
+            services.AddSingleton<IMapper, Mapper>();
             //services.AddSingleton<IIncidentService, IncidentManager>();
             //services.AddSingleton<IIncidentDal, EfIncidentDal>();
 
-            
+
 
         }
 

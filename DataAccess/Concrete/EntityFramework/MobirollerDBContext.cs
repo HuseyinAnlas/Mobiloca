@@ -17,6 +17,8 @@ namespace DataAccess.Concrete.EntityFramework
 
 
         public DbSet<Incident> Incidents { get; set; }
+        public DbSet<Incident_ITA> Incidents_ITA { get; set; }
+
 
 
     }

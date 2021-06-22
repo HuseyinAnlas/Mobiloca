@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
+using Core.Utilities.Results;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,8 +27,9 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            
-            var result = _incidentService.GetAll();
+            int culture = GetHeaderCulture();
+            StateManager _stateService = new StateManager(culture);
+            var result = _stateService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -47,36 +50,42 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Incident incident)
+        public IActionResult Add(List<InputIncidentsDto> incident)
         {
-            var result = _incidentService.Add(incident);
+            
+            int culture = GetHeaderCulture();
+            StateManager _stateService = new StateManager(culture); 
+            var result = _stateService.AddRange(incident);
             if (result.Success)
             {
-                return Ok(result);
+                return Ok();
             }
-            return BadRequest(result);
+
+            return BadRequest();
         }
 
-        [HttpPost("update")]
-        public IActionResult Update(Incident incident)
+        [HttpPost("getbyfilter")]
+        public IActionResult GetByFilter(FilterIncidentDto incident)
         {
-            var result = _incidentService.Update(incident);
+
+            int culture = GetHeaderCulture();
+            StateManager _stateService = new StateManager(culture);
+            var result = _stateService.GetByFilter(incident);
             if (result.Success)
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+
+            return BadRequest();
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete(Incident incident)
+        private int GetHeaderCulture()
         {
-            var result = _incidentService.Delete(incident);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            string headerCulture = HttpContext.Request.Headers["Culture"];
+            int culture = 0;
+            if (!string.IsNullOrEmpty(headerCulture))
+                culture = Convert.ToInt32(headerCulture);
+            return culture;
         }
 
     }
