@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.Mapper;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -22,17 +26,22 @@ namespace Business.Concrete
             _incident_ITADal = incident_ITADal;
         }
 
+        [SecuredOperation("incident.addRange,admin")]
+        [ValidationAspect(typeof(IncidentValidator))]
+        [CacheRemoveAspect("IIncidentService.Get")]
         public IResult AddRange(object incident)
         {
             _incident_ITADal.AddRange((List<Incident_ITA>)incident);
             return new SuccessResult(Messages.IncidentAdded);
         }
 
+        [CacheAspect]
         public IDataResult<object> GetAll()
         {
             return new SuccessDataResult<object>(_incident_ITADal.GetAll(), Messages.IncidentListed);
         }
 
+        [CacheAspect]
         public IDataResult<object> GetById(int incidentId)
         {
             return new SuccessDataResult<object>(_incident_ITADal.Get(c => c.ID == incidentId), Messages.IncidentListed);

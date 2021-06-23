@@ -19,5 +19,7 @@ namespace Business.Abstract
         object MapIncident(FilterIncidentDto inputIncidentDto);
         IDataResult<object> GetByFilter(object obj);
 
+        
+
     }
 }

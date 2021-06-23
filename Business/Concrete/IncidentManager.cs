@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Mapper;
@@ -26,11 +28,28 @@ namespace Business.Concrete
             _incidentDal = incidentDal;
         }
 
-
+        [CacheAspect]
         public IDataResult<object> GetAll()
         {
             return new SuccessDataResult<object>(_incidentDal.GetAll(), Messages.IncidentListed);
         }
+
+        [CacheAspect]
+        public IDataResult<object> GetById(int incidentId)
+        {
+            return new SuccessDataResult<object>(_incidentDal.Get(c => c.ID == incidentId), Messages.IncidentListed);
+        }
+
+        [SecuredOperation("incident.addRange,admin")]
+        [ValidationAspect(typeof(IncidentValidator))]
+        [CacheRemoveAspect("IIncidentService.Get")]
+        public IResult AddRange(object incident)
+        {           
+            _incidentDal.AddRange((List<Incident>)incident);
+            return new SuccessResult(Messages.IncidentAdded);
+        }
+
+
 
         public object MapIncident(List<InputIncidentsDto> inputIncidentDto)
         {
@@ -44,10 +63,8 @@ namespace Business.Concrete
             return mapper.Map<FilterIncidentDto, Incident>(inputIncidentDto);
         }
 
-        public IDataResult<object> GetById(int incidentId)
-        {
-            return new SuccessDataResult<object>(_incidentDal.Get(c => c.ID == incidentId), Messages.IncidentListed);
-        }
+
+
 
         public IDataResult<object> GetByFilter(object obj)
         {
@@ -64,17 +81,5 @@ namespace Business.Concrete
             return new SuccessDataResult<object>(_incidentDal.GetAll(), Messages.IncidentListed);
 
         }
-
-
-
-        [ValidationAspect(typeof(IncidentValidator))]
-        public IResult AddRange(object incident)
-        {           
-            _incidentDal.AddRange((List<Incident>)incident);
-            return new SuccessResult(Messages.IncidentAdded);
-        }
-
-
-
     }
 }
